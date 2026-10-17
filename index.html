@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffe9e7">
+<title>Nhiệm vụ chăm sóc Nhím 💗</title>
+<style>
+:root{--pink:#f58e9a;--pink2:#ffd8dc;--cream:#fff8f0;--brown:#68463f;--peach:#ffe9df;--green:#8ba58b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--brown);background:linear-gradient(160deg,#fff5ed,#ffe2e6 60%,#fff6e9);display:flex;justify-content:center;padding:18px 12px 30px}
+.app{width:min(100%,520px)}
+.card{background:rgba(255,250,245,.94);border:2px solid #fff;border-radius:28px;padding:24px 20px;box-shadow:0 12px 35px #b86e6e1c;text-align:center}
+.hidden{display:none!important}
+h1{font-size:clamp(1.8rem,7vw,2.5rem);line-height:1.15;margin:10px 0;color:#754c45}
+h2{font-size:1.45rem;margin:8px 0 12px}
+p{line-height:1.65}
+.hero{font-size:4.5rem;margin:4px 0}
+.eyebrow{color:#c66e7b;font-weight:700;letter-spacing:.08em;font-size:.78rem;text-transform:uppercase}
+button{font:inherit;font-weight:750;border:0;border-radius:18px;padding:14px 18px;min-height:50px;cursor:pointer;transition:transform .15s,filter .15s}
+button:active{transform:scale(.98)}
+.primary{background:var(--pink);color:white;box-shadow:0 5px 0 #df7886}
+.secondary{background:#fff0e9;color:var(--brown);border:1px solid #f4d6cd}
+.full{width:100%;margin-top:12px}
+.topline{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:#b76c78;margin-bottom:14px}
+.progress{height:8px;border-radius:99px;background:#f5d9d7;overflow:hidden;margin:10px 0 20px}
+.progress span{display:block;height:100%;background:var(--pink);width:0;transition:width .3s}
+.mission{display:flex;align-items:center;text-align:left;gap:12px;padding:14px;background:#fff7f0;border:1px solid #f7e2da;border-radius:20px;margin:10px 0}
+.mission .emoji{font-size:2rem;width:48px;flex-shrink:0}
+.mission .copy{flex:1}
+.mission strong{display:block;margin-bottom:3px}
+.mission small{display:block;line-height:1.4;color:#8a6860}
+.done{background:#eaf3e7;border-color:#cddfc8}
+.done .check{color:#62845e}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.option{background:#fff7f1;border:2px solid #f1ddd5;color:var(--brown);padding:16px 8px;min-height:90px}
+.option.selected{border-color:var(--pink);background:#fff0f1}
+.feedback{background:#fff0f1;border-radius:18px;padding:14px;margin-top:14px;line-height:1.6}
+.letter{background:#fff7f0;border:1px dashed #e7a1a6;border-radius:20px;padding:20px;text-align:left;line-height:1.8}
+.footer{font-size:.8rem;text-align:center;color:#a47770;margin:18px 8px}
+button:focus-visible{outline:3px solid #9e6b8b;outline-offset:3px}
+@media(min-width:430px){.card{padding:28px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <section id="welcome" class="card">
+    <div class="eyebrow">Một món quà nhỏ từ Thỏ 🐰</div>
+    <div class="hero">🐰💗🦔</div>
+    <h1>Nhiệm vụ<br>chăm sóc Nhím</h1>
+    <p>Nghe nói Nhím của em đang bị sổ mũi vì lạnh rồi… 🥺<br>Thỏ có vài nhiệm vụ nhỏ muốn giao cho anh.</p>
+    <p><strong>Không cần làm thật giỏi, chỉ cần nhớ thương bản thân một chút nhé.</strong></p>
+    <button class="primary full" onclick="startGame()">Nhận nhiệm vụ 💌</button>
+    <p style="margin-bottom:0;color:#b8757e">Anh mau khỏe nha. Thỏ luôn cổ vũ anh 💕</p>
+  </section>
+
+  <section id="tasks" class="card hidden">
+    <div class="topline"><span>💗 Nhiệm vụ của Nhím</span><span id="count">0/4</span></div>
+    <h2>Chăm sóc bản thân một chút nhé</h2>
+    <p>Chạm vào từng nhiệm vụ sau khi anh đã làm hoặc ghi nhớ nó nha.</p>
+    <div class="progress"><span id="bar"></span></div>
+    <div id="missionList"></div>
+    <button id="finishTasks" class="primary full" onclick="showQuiz()" disabled>Hoàn thành nhiệm vụ →</button>
+    <button class="secondary full" onclick="showLetter()">Em muốn nhắn anh một điều 💌</button>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="topline"><span>🎀 Câu hỏi nhỏ</span><span id="qCount">Câu 1/3</span></div>
+    <div class="hero" style="font-size:3rem">🦔❓</div>
+    <h2 id="question"></h2>
+    <p id="subquestion">Chọn điều tốt cho Nhím nhé!</p>
+    <div id="answers" class="options"></div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <button id="nextQ" class="primary full hidden" onclick="nextQuestion()">Câu tiếp theo →</button>
+    <button class="secondary full" onclick="showLetter()">Bỏ qua và đọc thư 💌</button>
+  </section>
+
+  <section id="letter" class="card hidden">
+    <div class="hero">💌🐰🦔</div>
+    <div class="eyebrow">Thư bí mật của Thỏ</div>
+    <h1 style="font-size:2rem">Gửi Nhím của em</h1>
+    <div class="letter">
+      Anh ơi, em nghe anh bị sổ mũi vì lạnh nên hơi lo một chút. Em không ở cạnh để đưa khăn giấy hay nhắc anh mặc ấm được, nên em gửi anh chiếc ôm này trước nha. 🥺💕<br><br>
+      Nhớ uống đủ nước, ăn uống vừa sức, giữ ấm và nghỉ ngơi nhé. Nếu anh thấy mệt thì đừng cố quá. Em mong anh sớm khỏe lại, nhưng quan trọng hơn là anh phải biết chăm sóc chính mình nữa.<br><br>
+      <strong>Em không cần anh lúc nào cũng mạnh mẽ. Anh cứ nghỉ ngơi khi cần nhé.</strong><br><br>
+      Mau khỏe nha, Nhím của Thỏ. Em thương anh nhiều lắm. 💗
+    </div>
+    <p id="finalLine">Nhiệm vụ cuối: gửi Thỏ một tin nhắn “Anh sẽ chăm sóc bản thân” nha 🥹</p>
+    <button class="primary full" onclick="showThanks()">Ôm Thỏ một cái 🫂</button>
+    <button class="secondary full" onclick="restart()">Chơi lại từ đầu ↻</button>
+  </section>
+
+  <section id="thanks" class="card hidden">
+    <div class="hero">💞🐰🦔💞</div>
+    <h1>Ôm anh thật chặt!</h1>
+    <p>Thỏ gửi Nhím một cái ôm thật ấm, một chiếc chăn mềm và thật nhiều yêu thương.</p>
+    <h2>🌙 Ngủ ngon, mau khỏe nhé anh 🌙</h2>
+    <p>— Thỏ nhỏ của anh 💗</p>
+    <button class="primary full" onclick="showLetter()">Đọc lại thư của em 💌</button>
+    <button class="secondary full" onclick="restart()">Chơi lại ↻</button>
+  </section>
+  <div class="footer">Làm bằng tình yêu, dành riêng cho Nhím 💗</div>
+</main>
+<script>
+const missions=[
+ {emoji:"🥤",title:"Uống nước đều đặn",desc:"Uống nước theo nhu cầu; đồ uống ấm nếu anh thấy dễ chịu."},
+ {emoji:"🧣",title:"Giữ ấm cơ thể",desc:"Mặc đủ ấm, thay đồ ướt nếu có và tránh để bị lạnh thêm."},
+ {emoji:"🍲",title:"Ăn chút gì đó nhé",desc:"Chọn món dễ ăn, đủ chất và ăn theo sức của anh."},
+ {emoji:"🛌",title:"Cho cơ thể được nghỉ",desc:"Giảm việc không cần thiết và ngủ đủ giấc tối nay."}
+];
+let completed=new Set(), qIndex=0;
+const questions=[
+ {q:"Nếu đang sổ mũi và mệt, anh chọn gì?",a:["Cố làm đến kiệt sức","Nghỉ ngơi khi cần"],correct:1,good:"Đúng rồi đó! 💗 Nghỉ ngơi giúp anh dễ chịu hơn. Đừng ép mình quá nhé.",bad:"Anh chăm chỉ thật, nhưng sức khỏe quan trọng hơn. Nếu mệt, mình nghỉ một chút nha."},
+ {q:"Khi trời lạnh, Nhím nên…",a:["Giữ ấm và uống đủ nước","Mặc phong phanh cho ngầu"],correct:0,good:"Chính xác! 🧣 Nhím ấm áp thì Thỏ mới bớt lo nè.",bad:"Ngầu cũng phải ấm nha anh 😭 Mặc đủ ấm giúp anh dễ chịu hơn đó."},
+ {q:"Nếu triệu chứng nặng lên hoặc khó thở, anh sẽ…",a:["Cố chịu một mình","Báo người thân và tìm hỗ trợ y tế"],correct:1,good:"Đúng rồi anh. 💕 Đừng cố chịu một mình khi có dấu hiệu đáng lo nhé.",bad:"Thỏ muốn anh an toàn. Nếu khó thở hoặc thấy nặng lên, hãy báo người thân và tìm trợ giúp y tế nhé."}
+];
+function show(id){document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}
+function startGame(){show("tasks");renderMissions()}
+function renderMissions(){
+ const list=document.getElementById("missionList");list.innerHTML="";
+ missions.forEach((m,i)=>{const done=completed.has(i);const el=document.createElement("button");el.className="mission "+(done?"done":"");el.style.width="100%";el.innerHTML=`<span class="emoji">${m.emoji}</span><span class="copy"><strong>${m.title}</strong><small>${m.desc}</small></span><span class="check">${done?"✓":"＋"}</span>`;el.onclick=()=>{if(done)completed.delete(i);else completed.add(i);renderMissions()};list.appendChild(el)});
+ document.getElementById("count").textContent=`${completed.size}/4`;document.getElementById("bar").style.width=`${completed.size/4*100}%`;document.getElementById("finishTasks").disabled=completed.size<4;document.getElementById("finishTasks").style.opacity=completed.size<4?".55":"1";
+}
+function showQuiz(){qIndex=0;show("quiz");renderQuestion()}
+function renderQuestion(){
+ const q=questions[qIndex];document.getElementById("qCount").textContent=`Câu ${qIndex+1}/3`;document.getElementById("question").textContent=q.q;document.getElementById("subquestion").textContent="Chọn điều tốt cho Nhím nhé!";document.getElementById("feedback").classList.add("hidden");document.getElementById("nextQ").classList.add("hidden");
+ const a=document.getElementById("answers");a.innerHTML="";q.a.forEach((answer,i)=>{const b=document.createElement("button");b.className="option";b.textContent=answer;b.onclick=()=>answerQuestion(i);a.appendChild(b)});
+}
+function answerQuestion(i){
+ const q=questions[qIndex];document.querySelectorAll("#answers button").forEach(b=>b.disabled=true);document.querySelectorAll("#answers button")[i].classList.add("selected");
+ const f=document.getElementById("feedback");f.textContent=i===q.correct?q.good:q.bad;f.classList.remove("hidden");const n=document.getElementById("nextQ");n.textContent=qIndex===questions.length-1?"Nhận thư bí mật 💌":"Câu tiếp theo →";n.classList.remove("hidden");
+}
+function nextQuestion(){if(qIndex<questions.length-1){qIndex++;renderQuestion()}else showLetter()}
+function showLetter(){show("letter")}
+function showThanks(){show("thanks")}
+function restart(){completed=new Set();qIndex=0;show("welcome")}
+</script>
+</body>
+</html>
